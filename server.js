@@ -1,18 +1,3 @@
-const express = require('express');
-const path = require('path');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Sirve los archivos estáticos desde la carpeta raíz del proyecto
-app.use(express.static(path.join(__dirname, '/')));
-
-// Para cualquier otra petición, devuelve el index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Inicia el servidor
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
-});
+version https://git-lfs.github.com/spec/v1
+oid sha256:0a8e85e0a880d1d2262045f4ca5b8844ed862f2bebf9ae81a65e9cd92e7e8a63
+size 504
