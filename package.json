@@ -1,0 +1,26 @@
+{
+  "name": "formulario-plan-conservacion",
+  "version": "1.0.0",
+  "description": "ANEXO I - FORMULARIO A: PLAN DE CONSERVACIÓN - Aplicación web para la gestión y cálculo de planes de conservación forestal.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "forestal",
+    "conservacion",
+    "leaflet",
+    "chartjs",
+    "inventario"
+  ],
+  "author": "Walter",
+  "license": "ISC",
+  "dependencies": {
+    "@turf/turf": "^6.5.0",
+    "chart.js": "^4.4.3",
+    "express": "^4.19.2",
+    "leaflet": "^1.9.4",
+    "leaflet-omnivore": "^0.3.4"
+  }
+}

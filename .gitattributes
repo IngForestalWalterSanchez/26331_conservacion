@@ -1,0 +1,5 @@
+index.html filter=lfs diff=lfs merge=lfs -text
+Ordenamiento.geojson filter=lfs diff=lfs merge=lfs -text
+membrete_provincia.png filter=lfs diff=lfs merge=lfs -text
+package-lock.json filter=lfs diff=lfs merge=lfs -text
+server.js filter=lfs diff=lfs merge=lfs -text
