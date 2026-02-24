@@ -1509,7 +1509,7 @@
                             </select>
                             <span id="ecoregionBadge"></span>
                             
-                            </div>
+                        </div>
                         <div id="sup-parcela-container-wrapper">
                             <div class="sup-parcela-container">
                                 <label for="supParcelasM2">SUP. TOTAL MUESTREADA (m²):</label>
@@ -3509,107 +3509,159 @@ window.speciesFormulasByRegion = {
 
         // ===== FUNCIONES PARA PLANILLA EXCEL (SheetJS) =====
 
-        function descargarPlanillaExcel() {
-            var speciesFormulas = window._speciesFormulasGlobal;
-            if (!speciesFormulas) { alert('Error: datos de especies no disponibles. Asegúrese de haber iniciado sesión.'); return; }
-            if (typeof XLSX === 'undefined') {
-                alert('Error: la librería SheetJS no está disponible. Verifique su conexión a internet.');
-                return;
-            }
-            const wb = XLSX.utils.book_new();
+        function _describirFusteXLS(fn) {
+            try {
+                var s = fn.toString();
 
-            // ---- Hoja INSTRUCCIONES ----
-            const instrData = [
-                ['PLANILLA DE INVENTARIO FORESTAL - PLAN DE CONSERVACIÓN'],
-                ['INSTRUCCIONES DE USO'],
-                ['1.', 'Vaya a la hoja INVENTARIO para ingresar los datos de los árboles medidos.'],
-                ['2.', 'Cada fila representa un árbol individual del inventario.'],
-                ['3.', 'El campo ESPECIE debe coincidir EXACTAMENTE con los nombres de la hoja ESPECIES_VALIDAS.'],
-                ['4.', 'El campo PARCELA N° es obligatorio e indica a qué parcela pertenece el árbol (número entero positivo).'],
-                ['5.', 'Los valores de DAP, Alt. Total y Alt. Fuste deben ser números positivos en cm/metros.'],
-                ['6.', 'Alt. Fuste no puede ser mayor que Alt. Total.'],
-                ['7.', 'Una vez completada, GUARDE el archivo y cárguelo desde la página web usando el botón Cargar Planilla Excel.'],
-                ['8.', 'No modifique la estructura de columnas ni los nombres de los encabezados.'],
-            ];
-            const wsInst = XLSX.utils.aoa_to_sheet(instrData);
-            wsInst['!cols'] = [{ wch: 5 }, { wch: 80 }];
-            XLSX.utils.book_append_sheet(wb, wsInst, 'INSTRUCCIONES');
+                // ── Fórmulas regionales (speciesFormulasByRegion) ────────────────
+                // Lineales DAP²  →  V = a + b·DAP²
+                var mLineal = s.match(/=>\s*([+-]?\s*[\d.]+)\s*\+\s*([\d.]+)\s*\*\s*d\s*\*\*\s*2\s*$/);
+                if (mLineal) {
+                    var a = parseFloat(mLineal[1].replace(/\s/g,''));
+                    var b = parseFloat(mLineal[2]);
+                    return 'V = ' + a.toFixed(5) + ' + ' + b.toFixed(8) + '·DAP²';
+                }
+                // Polynomial DAP²·hf  → división /1000
+                if (s.indexOf('1,5336') >= 0 || s.indexOf('1.5336') >= 0)
+                    return 'V = (-1.5336 + 0.0525·DAP² + 0.0569·DAP²·hf + 0.0161·DAP·hf²) / 1000';
+                // Potencial con at  →  (a·DAP^b·ht^c) / 1000
+                if (s.indexOf('0.04076') >= 0 && s.indexOf('2.01848') >= 0)
+                    return 'V = (0.04076·DAP^2.01848·ht^0.98123) / 1000';
+                // Exponencial compleja con ln(hf)²
+                if (s.indexOf('-3.27947') >= 0 || s.indexOf('3,27947') >= 0)
+                    return 'V = exp(-3.27947 - 0.07343·ln(hf)² + 1.05804·ln(DAP²·hf)) / 1000';
+                // ESP lineal DAP  →  V = a + b·DAP
+                var mLinealD = s.match(/=>\s*([+-]?[\d.]+)\s*\+\s*([\d.]+)\s*\*\s*d\s*[^*]/);
+                if (mLinealD && s.indexOf('d**2') < 0 && s.indexOf('d * d') < 0)
+                    return 'V = ' + mLinealD[1] + ' + ' + mLinealD[2] + '·DAP';
+                // PCH: Caldén con área basal
+                if (s.indexOf('AB') >= 0 && s.indexOf('1.5') >= 0)
+                    return 'V = a·AB - b·AB^1.5 + c·AB·ht';
+                // Holocalyx SPA
+                if (s.indexOf('0.002525') >= 0)
+                    return 'V = 0.002525 + 0.000049775·DAP²·hf';
+                // Zanthoxylum polynomial /1000
+                if (s.indexOf('/ 1000') >= 0 && s.indexOf('d**2') >= 0 && s.indexOf('d**3') >= 0)
+                    return 'V = (a·DAP² + b·DAP³) / 1000';
 
-            // ---- Hoja INVENTARIO ----
-            const invHeaders = ['N°', 'ESPECIE', 'NOMBRE VULGAR (referencia)', 'DAP (cm)', 'ALT. TOTAL (m)', 'ALT. FUSTE (m)', 'PARCELA N° (Obligatorio)'];
-            const invData = [invHeaders];
-            for (let i = 1; i <= 200; i++) invData.push([i, '', '', '', '', '', '']);
-            const wsInv = XLSX.utils.aoa_to_sheet(invData);
-            wsInv['!cols'] = [{ wch: 6 }, { wch: 42 }, { wch: 30 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 18 }];
-            wsInv['!freeze'] = { xSplit: 0, ySplit: 1 };
-            XLSX.utils.book_append_sheet(wb, wsInv, 'INVENTARIO');
-
-            // ---- Hoja ESPECIES_VALIDAS ----
-            const spHeaders = ['NOMBRE CIENTÍFICO (usar en planilla)', 'NOMBRE VULGAR (referencia)'];
-            const spData = [spHeaders];
-            const _xRegion = document.getElementById('selEcoregion') ? document.getElementById('selEcoregion').value : '';
-            const _xSrc = (_xRegion && window.speciesFormulasByRegion && window.speciesFormulasByRegion[_xRegion]) ? window.speciesFormulasByRegion[_xRegion] : speciesFormulas;
-            const _xLabel = { ESP: 'Espinal (ESP)', PCH: 'Parque Chaqueño (PCH)', SPA: 'Selva Paranaense (SPA)' }[_xRegion] || 'General';
-            Object.keys(_xSrc).sort().forEach(key => {
-                spData.push([key, _xSrc[key].scientificName]);
-            });
-            const wsSp = XLSX.utils.aoa_to_sheet(spData);
-            wsSp['!cols'] = [{ wch: 45 }, { wch: 45 }];
-            XLSX.utils.book_append_sheet(wb, wsSp, 'ESPECIES_VALIDAS');
-
-            // ---- Hoja FORMULAS_VOLUMEN ----
-            function describeFórmula(fn) {
-                const s = fn.toString();
-                if (s.includes('-9.5086+2.0041') && s.includes('0.973*Math.log(af)'))
+                // ── Fórmulas originales (speciesFormulas genérico) ───────────────
+                if (s.indexOf('-9.5086+2.0041') >= 0 && s.indexOf('0.973*Math.log(af)') >= 0)
                     return 'ln(V) = -9.5086 + 2.0041·ln(d) + 0.973·ln(hf)';
-                if (s.includes('-9.22955+1.933161') && s.includes('0.901548'))
-                    return 'ln(V) = -9.22955 + 1.933161·ln(d) + 0.901548·ln(hf)';
-                if (s.includes('-9.44933+0.983515'))
-                    return 'ln(V) = -9.44933 + 0.983515·ln(d²·hf)';
-                if (s.includes('-9.18113+0.950324'))
-                    return 'ln(V) = -9.18113 + 0.950324·ln(d²·hf)';
-                if (s.includes('-9.39969+1.9797'))
+                if (s.indexOf('-9.5086') >= 0)
+                    return 'ln(V) = -9.5086 + 2.0041·ln(d) + 0.973·ln(hf)';
+                if (s.indexOf('-9.39969+1.9797') >= 0)
                     return 'ln(V) = -9.39969 + 1.9797·ln(d) + 0.939584·ln(hf)';
-                if (s.includes('-8.3864+0.0551011'))
+                if (s.indexOf('-9.22955+1.933161') >= 0)
+                    return 'ln(V) = -9.22955 + 1.933161·ln(d) + 0.901548·ln(hf)';
+                if (s.indexOf('-9.44933+0.983515') >= 0)
+                    return 'ln(V) = -9.44933 + 0.983515·ln(d²·hf)';
+                if (s.indexOf('-9.18113+0.950324') >= 0)
+                    return 'ln(V) = -9.18113 + 0.950324·ln(d²·hf)';
+                if (s.indexOf('-8.3864+0.0551011') >= 0)
                     return 'ln(V) = -8.3864 + 0.0551011·d - 0.000533799·d² - 0.159762·hf + 1.34969·ln(d·hf)';
-                if (s.includes('0.000033 * d**2.3455'))
+                if (s.indexOf('0.000033 * d**2.3455') >= 0 || s.indexOf('0.000033*d**2.3455') >= 0)
                     return 'V = 0.000033 · d^2.3455 · ht^0.687553';
-                return 'ln(V) = -9.49642 - 0.00145081·d + 0.824921·ln(d²·hf) + 0.366708·ln(d·hf)';
-            }
-            function describeFórmulaTotal(fn) {
-                const s = fn.toString();
-                if (s.includes('0.000033 * d**2.3455'))
+                if (s.indexOf('-9.49642') >= 0)
+                    return 'ln(V) = -9.49642 - 0.00145081·d + 0.824921·ln(d²·hf) + 0.366708·ln(d·hf)';
+
+                // Fallback: devolver la función como texto limpio
+                return s.replace(/^\s*\(.*?\)\s*=>\s*/, '').trim().substring(0, 80);
+            } catch(e) { return 'Ver código fuente'; }
+        }
+        function _describirTotalXLS(fn) {
+            if (!fn) return '-';
+            try {
+                var s = fn.toString();
+                if (s.indexOf('0.000033 * d**2.3455') >= 0 || s.indexOf('0.000033*d**2.3455') >= 0)
                     return 'V = 0.000033 · d^2.3455 · ht^0.687553';
-                if (s.includes('-10.78979'))
+                if (s.indexOf('-10.78979') >= 0)
                     return 'ln(V) = -10.78979 + 1.07129·ln(d²·ht)';
-                if (s.includes('-10.976'))
+                if (s.indexOf('-10.976') >= 0)
                     return 'ln(V) = -10.976 + 1.11062·ln(d²·ht)';
-                if (s.includes('-10.79166'))
+                if (s.indexOf('-10.79166') >= 0)
                     return 'ln(V) = -10.79166 + 1.091557·ln(d²·ht)';
-                return 'ln(V) = -10.78979 + 1.07129·ln(d²·ht)';
+                // Regionales: volTotal = mismo que volFuste (misma lambda) — describir igual
+                return _describirFusteXLS(fn);
+            } catch(e) { return 'Ver código fuente'; }
+        }
+
+        function descargarPlanillaExcel() {
+            try {
+                if (typeof XLSX === 'undefined') {
+                    alert('Error: la librería SheetJS no está disponible.\nVerifique su conexión a internet y recargue la página.');
+                    return;
+                }
+
+                // Determinar fuente de especies según ecorregión
+                var selEco = document.getElementById('selEcoregion');
+                var region = selEco ? selEco.value : '';
+                var fuenteEspecies = (region && window.speciesFormulasByRegion && window.speciesFormulasByRegion[region])
+                    ? window.speciesFormulasByRegion[region]
+                    : (window._speciesFormulasGlobal || {});
+
+                var etiquetaRegion = { ESP: 'Espinal (ESP)', PCH: 'Parque Chaqueño (PCH)', SPA: 'Selva Paranaense (SPA)' }[region] || 'General (fórmulas originales)';
+                var nombreArchivo = region ? ('Planilla_Inventario_Conservacion_' + region + '.xlsx') : 'Planilla_Inventario_Conservacion.xlsx';
+
+                var wb = XLSX.utils.book_new();
+
+                // ── Hoja INSTRUCCIONES ──────────────────────────────────────
+                var instrData = [
+                    ['PLANILLA DE INVENTARIO FORESTAL - PLAN DE CONSERVACIÓN'],
+                    ['INSTRUCCIONES DE USO'],
+                    ['', 'Ecorregión aplicada: ' + etiquetaRegion],
+                    ['', 'Fuente de ecuaciones: Segundo Inventario Nacional de Bosques Nativos (PINBN)'],
+                    ['1.', 'Vaya a la hoja INVENTARIO para ingresar los datos de los árboles medidos.'],
+                    ['2.', 'Cada fila representa un árbol individual del inventario.'],
+                    ['3.', 'El campo ESPECIE debe coincidir EXACTAMENTE con los nombres de la hoja ESPECIES_VALIDAS.'],
+                    ['4.', 'El campo PARCELA N° es obligatorio e indica a qué parcela pertenece el árbol (número entero positivo).'],
+                    ['5.', 'Los valores de DAP, Alt. Total y Alt. Fuste deben ser números positivos en cm/metros.'],
+                    ['6.', 'Alt. Fuste no puede ser mayor que Alt. Total.'],
+                    ['7.', 'Una vez completada, GUARDE el archivo y cárguelo desde la página web usando el botón Cargar Planilla Excel.'],
+                    ['8.', 'No modifique la estructura de columnas ni los nombres de los encabezados.'],
+                    ['9.', '⚠ La ecorregión de la planilla debe coincidir con la seleccionada en la web al momento de cargar.'],
+                ];
+                var wsInst = XLSX.utils.aoa_to_sheet(instrData);
+                wsInst['!cols'] = [{ wch: 5 }, { wch: 90 }];
+                XLSX.utils.book_append_sheet(wb, wsInst, 'INSTRUCCIONES');
+
+                // ── Hoja INVENTARIO ─────────────────────────────────────────
+                var invHeaders = ['N°', 'ESPECIE', 'NOMBRE VULGAR (referencia)', 'DAP (cm)', 'ALT. TOTAL (m)', 'ALT. FUSTE (m)', 'PARCELA N° (Obligatorio)'];
+                var invData = [invHeaders];
+                for (var i = 1; i <= 200; i++) invData.push([i, '', '', '', '', '', '']);
+                var wsInv = XLSX.utils.aoa_to_sheet(invData);
+                wsInv['!cols'] = [{ wch: 6 }, { wch: 42 }, { wch: 30 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 18 }];
+                XLSX.utils.book_append_sheet(wb, wsInv, 'INVENTARIO');
+
+                // ── Hoja ESPECIES_VALIDAS ───────────────────────────────────
+                var spData = [['NOMBRE CIENTÍFICO (usar en planilla)', 'NOMBRE VULGAR (referencia)', 'Ecorregión']];
+                Object.keys(fuenteEspecies).sort().forEach(function(key) {
+                    spData.push([key, fuenteEspecies[key].scientificName || '', etiquetaRegion]);
+                });
+                var wsSp = XLSX.utils.aoa_to_sheet(spData);
+                wsSp['!cols'] = [{ wch: 48 }, { wch: 40 }, { wch: 28 }];
+                XLSX.utils.book_append_sheet(wb, wsSp, 'ESPECIES_VALIDAS');
+
+                // ── Hoja FORMULAS_VOLUMEN ───────────────────────────────────
+                var fvData = [['ESPECIE (Nombre Científico)', 'NOMBRE VULGAR', 'ECUACIÓN VOLUMEN DE FUSTE', 'ECUACIÓN VOLUMEN TOTAL', 'Referencias: d=DAP(cm), hf=Alt.Fuste(m), ht=Alt.Total(m), V=Volumen(m³)']];
+                Object.keys(fuenteEspecies).sort().forEach(function(key) {
+                    var sp = fuenteEspecies[key];
+                    fvData.push([
+                        key,
+                        sp.scientificName || '',
+                        sp.volFuste ? _describirFusteXLS(sp.volFuste) : '-',
+                        sp.volTotal  ? _describirTotalXLS(sp.volTotal)  : '-'
+                    ]);
+                });
+                var wsFv = XLSX.utils.aoa_to_sheet(fvData);
+                wsFv['!cols'] = [{ wch: 45 }, { wch: 32 }, { wch: 62 }, { wch: 45 }, { wch: 65 }];
+                XLSX.utils.book_append_sheet(wb, wsFv, 'FORMULAS_VOLUMEN');
+
+                XLSX.writeFile(wb, nombreArchivo);
+
+            } catch(err) {
+                alert('Error al generar la planilla: ' + err.message + '\n\nVerifique que SheetJS esté cargado (requiere conexión a internet).');
+                console.error('descargarPlanillaExcel error:', err);
             }
-
-            const fvHeaders = [
-                'ESPECIE (Nombre Científico)', 'NOMBRE VULGAR',
-                'ECUACIÓN VOLUMEN DE FUSTE', 'ECUACIÓN VOLUMEN TOTAL',
-                'Referencias: d=DAP(cm), hf=Alt.Fuste(m), ht=Alt.Total(m), V=Volumen(m³)'
-            ];
-            const fvData = [fvHeaders];
-            Object.keys(_xSrc).sort().forEach(key => {
-                const sp = _xSrc[key];
-                fvData.push([
-                    key,
-                    sp.scientificName,
-                    describeFórmula(sp.volFuste),
-                    describeFórmulaTotal(sp.volTotal)
-                ]);
-            });
-            const wsFv = XLSX.utils.aoa_to_sheet(fvData);
-            wsFv['!cols'] = [{ wch: 42 }, { wch: 32 }, { wch: 58 }, { wch: 42 }, { wch: 60 }];
-            XLSX.utils.book_append_sheet(wb, wsFv, 'FORMULAS_VOLUMEN');
-
-            const _xFileName = _xRegion ? `Planilla_Inventario_Conservacion_${_xRegion}.xlsx` : 'Planilla_Inventario_Forestal_Conservacion.xlsx';
-            XLSX.writeFile(wb, _xFileName);
         }
 
         function mostrarEstadoCarga(mensaje, tipo) {
@@ -3631,3 +3683,6 @@ window.speciesFormulasByRegion = {
     </script>
 </body>
 </html>
+
+      
+                                
