@@ -2293,6 +2293,518 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
         const T_VALUES_95_CI = { 1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228, 15: 2.131, 20: 2.086, 25: 2.060, 30: 2.042, Infinity: 1.96 };
         function getTValue(df) { if (df <= 0) return T_VALUES_95_CI[1]; if (df >= 30) return T_VALUES_95_CI.Infinity; if (T_VALUES_95_CI[df]) return T_VALUES_95_CI[df]; let closestDf = Object.keys(T_VALUES_95_CI).map(Number).filter(k => k !== Infinity && k <= df).pop(); return T_VALUES_95_CI[closestDf || 1]; }
         const locationData = { "ALVEAR": { dpto: "GENERAL ALVEAR" }, "BELLA VISTA": { dpto: "BELLA VISTA" }, "BERON DE ASTRADA": { dpto: "BERON DE ASTRADA" }, "CHAVARRIA": { dpto: "SAN ROQUE" }, "COLONIA CARLOS PELLEGRINI": { dpto: "SAN MARTIN" }, "COLONIA LIEBIGS": { dpto: "ITUZAINGO" }, "CONCEPCION": { dpto: "CONCEPCION" }, "CORRIENTES": { dpto: "CAPITAL" }, "CURUZU CUATIA": { dpto: "CURUZU CUATIA" }, "EL SOMBRERO": { dpto: "EMPEDRADO" }, "EMPEDRADO": { dpto: "EMPEDRADO" }, "ESQUINA": { dpto: "ESQUINA" }, "FELIPE YOFRE": { dpto: "MERCEDES" }, "GARRUCHOS": { dpto: "SANTO TOME" }, "GOBERNADOR AGR. VALENTIN VIRASORO": { dpto: "SANTO TOME" }, "GOBERNADOR JUAN E. MARTINEZ": { dpto: "LAVALLE" }, "GOYA": { dpto: "GOYA" }, "GUAVIRAVI": { dpto: "SAN MARTIN" }, "ITA IBATE": { dpto: "GENERAL PAZ" }, "ITATI": { dpto: "ITATI" }, "ITUZAINGO": { dpto: "ITUZAINGO" }, "LA CRUZ": { dpto: "SAN MARTIN" }, "LAGUNA BRAVA": { dpto: "CAPITAL" }, "LAVALLE": { dpto: "LAVALLE" }, "LORETO": { dpto: "SAN MIGUEL" }, "MARIANO I. LOZA": { dpto: "MERCEDES" }, "MBURUCUYA": { dpto: "MBURUCUYA" }, "MERCEDES": { dpto: "MERCEDES" }, "MOCORETA": { dpto: "MONTE CASEROS" }, "MONTE CASEROS": { dpto: "MONTE CASEROS" }, "NUESTRA SENORA DEL ROSARIO DE CAA CATI": { dpto: "GENERAL PAZ" }, "9 DE JULIO": { dpto: "SAN ROQUE" }, "PASO DE LA PATRIA": { dpto: "SAN COSME" }, "PASO DE LOS LIBRES": { dpto: "PASO DE LOS LIBRES" }, "PEDRO R. FERNANDEZ": { dpto: "SAN ROQUE" }, "PERUGORRIA": { dpto: "CURUZU CUATIA" }, "SALADAS": { dpto: "SALADAS" }, "SAN ANTONIO": { dpto: "ITUZAINGO" }, "SAN CARLOS": { dpto: "ITUZAINGO" }, "SAN COSME": { dpto: "SAN COSME" }, "SAN LORENZO": { dpto: "SALADAS" }, "SAN LUIS DEL PALMAR": { dpto: "SAN LUIS DEL PALMAR" }, "SAN MIGUEL": { dpto: "SAN MIGUEL" }, "SAN ROQUE": { dpto: "SAN ROQUE" }, "SANTA ANA": { dpto: "SAN COSME" }, "SANTA LUCIA": { dpto: "LAVALLE" }, "SANTA ROSA": { dpto: "CONCEPCION" }, "SANTO TOME": { dpto: "SANTO TOME" }, "SAUCE": { dpto: "SAUCE" }, "VILLA OLIVARI": { dpto: "ITUZAINGO" }, "YAPEYU": { dpto: "SAN MARTIN" }, };
+window.ecuacionesTexto = {
+  'ESP': {
+    'Acanthosyris spinescens': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Achatocarpus praecox': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Actinostemon concolor': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Allophylus edulis': { ecuacion: 'V = -0,02645+0,00051778*DAP²' },
+    'Aloysia gratissima': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Aspidosperma quebracho-blanco': { ecuacion: 'V = exp(-10,97613+1,11062*ln(DAP²*H))' },
+    'Atamisquea emarginata': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Baccharis dracunculifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Berberis laurina': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Blepharocalyx salicifolius': { ecuacion: 'V = exp(-2,291+0,05585*(lnDAP)²+0,83235*ln(DAP²*H))/1000' },
+    'Bulnesia retama': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Butia yatay': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Cabralea canjerana': { ecuacion: 'V = -0,16388+0,00070302*DAP²' },
+    'Capparicordis tweediana': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Celtis chichape': { ecuacion: 'V = 0,00009*DAP²+0,0048*DAP-0,0355' },
+    'Celtis ehrenbergiana': { ecuacion: 'V = 0,00009*DAP²+0,0048*DAP-0,0355' },
+    'Celtis iguanaea': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Cephalanthus glabratus': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Chrysophyllum marginatum': { ecuacion: 'V = -0,03529+0,00090151*DAP²' },
+    'Condalia buxifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Condalia microphylla': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Copernicia alba': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Erythrina crista-galli': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Erythroxylum microphyllum': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Eugenia mattosii': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Eugenia myrcianthes': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Eugenia uniflora': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Eugenia uruguayensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Geoffroea decorticans': { ecuacion: 'V = exp(-2,63632+0,97973*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Gleditsia amorphoides': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Gleditsia triacanthos': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Guettarda uruguensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Jodina rhombifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Larrea divaricata': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Ligustrum lucidum*': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Lycium chilense': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Melia azedarach*': { ecuacion: 'V = exp(-9,7647+1,8645*lnDAP+0,9281*lnH)' },
+    'Mimosa bimucronata': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Mimosa ostenii': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Morus alba*': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Morus insignis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Myrcianthes cisplatensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Myrcianthes pungens': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Myrsine balansae': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Myrsine laetevirens': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Nectandra angusta': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Nectandra angustifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Parkinsonia aculeata': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Parkinsonia praecox': { ecuacion: 'V = exp(-2,63632+0,97973*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Phytolacca dioica': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Pisonia zapallo': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Pouteria gardneriana': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Pouteria salicifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Prosopis affinis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Prosopis alba': { ecuacion: 'V = exp(-9,570224+2,234559*ln(DAP))' },
+    'Prosopis caldenia': { ecuacion: 'V = 2,8942*AB-(6,3070*AB^1,5)+(0,5889*AB*H)' },
+    'Prosopis chilensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Prosopis flexuosa': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Prosopis kuntzei': { ecuacion: 'V = exp(-2,6363+0,9797*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Prosopis nigra': { ecuacion: 'V = exp(-10,7917+1,0916*ln(DAP²*H))' },
+    'Prosopis torquata': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Ruprechtia laxiflora': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Ruprechtia salicifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Salix humboldtiana': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Sapium glandulosum': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Sapium haematospermum': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Schinopsis balansae': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Schinopsis lorentzii': { ecuacion: 'V = exp(-10,8156+1,088*ln(DAP²*H))' },
+    'Schinus bumelioides': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Schinus fasciculatus': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Schinus longifolius': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Schinus polygamus': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Scutia buxifolia': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Sebastiania brasiliensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Sebastiania commersoniana': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Senegalia bonariensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Senegalia tucumanensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Sideroxylon obtusifolium': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Syagrus romanzoffiana': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Tabernaemontana catharinensis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Terminalia australis': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Trithrinax campestris': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Vachellia aroma': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Vachellia astringens': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Vachellia caven': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Vassobia breviflora': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Xylosma tweediana': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Xylosma venosa': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Zanthoxylum fagara': { ecuacion: 'V = 0,07307+0,00005407*DAP²*LF' },
+    'Zanthoxylum rhoifolium': { ecuacion: 'V = (-1,5336+0,0525*DAP²+0,0569*DAP²*LF+0,0161*DAP*LF²)/1000' },
+  },
+  'PCH': {
+    'Acacia paradoxa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Acanthosyris falcata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Acanthosyris spinescens': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Achatocarpus praecox': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Acrocomia aculeata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Agonandra excelsa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Albizia inundata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Allenrolfea vaginata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Allophylus edulis': { ecuacion: 'V = -0,02645+0,00051778*DAP²' },
+    'Aloysia virgata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Anadenanthera colubrina': { ecuacion: 'V = exp(-3,025+1,01618*ln(DAP²*H)-0,00003*H²*DAP)/1000' },
+    'Anisocapparis speciosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Annona emarginata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Aralia soratensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Aspidosperma quebracho-blanco': { ecuacion: 'V = exp(-10,97613+1,11062*ln(DAP²*H))' },
+    'Aspidosperma triternatum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Atamisquea emarginata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ateleia glazioveana': { ecuacion: 'V = -1,5336+0,0525*DAP²+0,0569*DAP²*LF+0,0161*DAP*LF²' },
+    'Athyana weinmanniifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Azara salicifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Berberis commutata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Berberis microphylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Blepharocalyx salicifolius': { ecuacion: 'V = exp(-2,291+0,05585*(lnDAP)²+0,83235*ln(DAP²*H))/1000' },
+    'Bougainvillea campanulata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Bougainvillea praecox': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Bougainvillea spinosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Bougainvillea stipitata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Bulnesia foliosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Bulnesia retama': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Butia yatay': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cabralea canjerana': { ecuacion: 'V = -0,16388+0,00070302*DAP²' },
+    'Calycophyllum multiflorum': { ecuacion: 'V = exp(-2,291+0,05585*(lnDAP)²+0,83235*ln(DAP²*H))/1000' },
+    'Capparicordis tweediana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Capsicum recurvatum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Casearia catharinensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Casearia sylvestris': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Castela coccinea': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cedrela balansae': { ecuacion: 'V = exp(-2,43851+0,95605*ln(DAP²*LF)-0,80350*(LF/DAP))/1000' },
+    'Ceiba chodatii': { ecuacion: 'V = 0,000117*(DAP²*H)^0,8387' },
+    'Ceiba speciosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Celtis chichape': { ecuacion: 'V = 0,00009*DAP²+0,0048*DAP-0,0355' },
+    'Celtis ehrenbergiana': { ecuacion: 'V = 0,00009*DAP²+0,0048*DAP-0,0355' },
+    'Celtis iguanaea': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Celtis pallida': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Chloroleucon chacoense': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Chloroleucon foliolosum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Chloroleucon tenuiflorum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Chomelia obtusa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Chrysophyllum gonocarpum': { ecuacion: 'V = -0,00698+0,00055555*DAP²' },
+    'Chrysophyllum marginatum': { ecuacion: 'V = -0,03529+0,00090151*DAP²' },
+    'Cnicothamnus lorentzii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Coccoloba cordata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Coccoloba tiliacea': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cochlospermum tetraporum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Condalia buxifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Condalia microphylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Copernicia alba': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cordia americana': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Cordia ecalyculata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cordia saccelia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Croton urucurana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cupania vernalis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cybistax antisyphilitica': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cynophalla flexuosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Cynophalla retusa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Dasyphyllum brasiliense': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Diplokeleba floribunda': { ecuacion: 'V = 0,002525+0,000049775*DAP²*LF' },
+    'Duranta serratifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Enterolobium contortisiliquum': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Erythrina crista-galli': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Erythrina falcata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Erythroxylum argentinum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Erythroxylum cuneifolium': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Erythroxylum microphyllum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Eugenia hyemalis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Eugenia myrcianthes': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Eugenia pitanga': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Eugenia punicifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Eugenia speciosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Eugenia uniflora': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Ficus citrifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ficus luschnathiana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Geoffroea decorticans': { ecuacion: 'V = exp(-2,63632+0,97973*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Gleditsia amorphoides': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Gochnatia palosanto': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Gonopterodendron bonariensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Gonopterodendron sarmientoi': { ecuacion: 'V = exp(-2,6363+0,9797*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Guarea macrophylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Guazuma ulmifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Guettarda uruguensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Handroanthus albus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Handroanthus heptaphyllus': { ecuacion: 'V = 0,000166288*DAP^1,29072*LF^1,5206' },
+    'Handroanthus impetiginosus': { ecuacion: 'V = exp(-2,43851+0,95605*ln(DAP²*LF)-0,80350*(LF/DAP))/1000' },
+    'Holocalyx balansae': { ecuacion: 'V = 0,002525+0,000049775*DAP²*LF' },
+    'Inga affinis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Inga uraguensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Jatropha hieronymi': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Jodina rhombifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Juglans australis': { ecuacion: 'V = exp(-2,4385+0,9561*ln(DAP²*LF)-0,8035*(LF/DAP))/1000' },
+    'Kageneckia lanceolata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lachesiodendron viridiflorum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Larrea cuneifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Larrea divaricata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Libidibia paraguariensis': { ecuacion: 'V = exp(-2,63632+0,97973*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Ligustrum lucidum*': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lithraea molleoides': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Loxopterygium grisebachii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Luehea divaricata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lycium boerhaviaefolium': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lycium cestroides': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lycium cuneatum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lycium morongii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Lycium tenuispinosum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Maclura tinctoria': { ecuacion: 'V = exp(-3,27947-0,07343*(lnLF)²+1,05804*ln(DAP²*LF))/1000' },
+    'Malvastrum uniapiculatum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Maytenus boaria': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Maytenus viscifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Maytenus vitis-idaea': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Melia azedarach*': { ecuacion: 'V = exp(-9,7647+1,8645*lnDAP+0,9281*lnH)' },
+    'Microlobius foetidus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Mimosa bonplandii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Mimosa candelabrum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Mimosa debilis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Mimosa detinens': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Mimozyganthus carinatus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Monteverdia ilicifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Monteverdia spinosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Morus alba*': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Morus insignis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myracrodruon balansae': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myracrodruon urundeuva': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrcia pubiflora': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrcianthes cisplatensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrcianthes mato': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Myrcianthes pseudomato': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrcianthes pungens': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrrhinium atropurpureum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrsine balansae': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Myrsine laetevirens': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Nectandra angustifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Nectandra cuspidata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Nicotiana glauca': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ochetophila trinervis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ocotea acutifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ocotea puberula': { ecuacion: 'V = -0,57078+0,00098919*DAP²' },
+    'Parapiptadenia excelsa': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Parasenegalia visco': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Parkinsonia aculeata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Parkinsonia praecox': { ecuacion: 'V = exp(-2,6363+0,9797*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Parodiodendron marginivillosum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Peltophorum dubium': { ecuacion: 'V = 0,000107787*DAP^1,70242*LF^0,885036' },
+    'Philyra brasiliensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Phoradendron habrostachyum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Phyllanthus chacoensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Phyllostylon rhamnoides': { ecuacion: 'V = exp(-2,3988+0,96419*ln(DAP²*H)-1,00826*(H/DAP))/1000' },
+    'Phytolacca dioica': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Pinus taeda*': { ecuacion: 'V = 0,04076*DAP^2,01848*H^0,98123' },
+    'Pisonia zapallo': { ecuacion: 'V = exp(-2,66494-0,04695*(lnLF)²+0,99796*ln(DAP²*LF))/1000' },
+    'Plinia rivularis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Porlieria microphylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Pouteria gardneriana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Pouteria glomerata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis affinis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis alba': { ecuacion: 'V = exp(-9,570224+2,234559*ln(DAP))' },
+    'Prosopis alpataco': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis argentina': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis caldenia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis chilensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis elata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis ferox': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis flexuosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis hassleri': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis kuntzei': { ecuacion: 'V = exp(-2,6363+0,9797*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Prosopis nigra': { ecuacion: 'V = exp(-10,7917+1,0916*ln(DAP²*H))' },
+    'Prosopis rubiflora': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis ruizleali': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis ruscifolia': { ecuacion: 'V = exp(-2,6363+0,9797*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Prosopis sericantha': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis torquata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prosopis vinalillo': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Prunus tucumanensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Psidium guajava': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Psidium striatulum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Pterogyne nitens': { ecuacion: 'V = exp(-2,4385+0,9561*ln(DAP²*LF)-0,8035*(LF/DAP))/1000' },
+    'Randia ferox': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Rauvolfia schuelii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Rubus brasiliensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ruprechtia apetala': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ruprechtia brachysepala': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ruprechtia laxiflora': { ecuacion: 'V = -0,10352+0,00070109*DAP²' },
+    'Ruprechtia salicifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Salix humboldtiana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Salta triflora': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sapindus saponaria': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sapium glandulosum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sapium haematospermum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sarcomphalus mistol': { ecuacion: 'V = exp(-2,63632+0,97973*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Sarcotoxicum salicifolium': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schaefferia argentinensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinopsis balansae': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinopsis heterophylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinopsis lorentzii': { ecuacion: 'V = exp(-10,8156+1,088*ln(DAP²*H))' },
+    'Schinus areira': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus bumelioides': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus fasciculatus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus gracilipes': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus latifolius*': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus lentiscifolius': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus longifolius': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus marchandii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus meyeri': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus molle': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus piliferus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus polygamus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus praecox': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus roigii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus sp.': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Schinus spinosus': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Scutia buxifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sebastiania brasiliensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sebastiania commersoniana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Senegalia bonariensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Senegalia fiebrigii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Senegalia gilliesii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Senegalia martii': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Senegalia praecox': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Serjania foveata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sideroxylon obtusifolium': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Solanum granulosumleprosum': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Solanum riparium': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Sorocea sprucei': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Syagrus romanzoffiana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Tabebuia nodosa': { ecuacion: 'V = exp(-2,6363+0,9797*ln(DAP²*LF)-0,00028*ln(LF²*DAP))/1000' },
+    'Tabernaemontana catharinensis': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Tachigali aurea': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Tecoma stans': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Terminalia catappa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Terminalia triflora': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Tessaria integrifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Tipuana tipu': { ecuacion: 'V = exp(-2,43851+0,95605*ln(DAP²*LF)-0,8035*(LF/DAP))/1000' },
+    'Trichilia catigua': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Trichilia elegans': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Trithrinax campestris': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Trithrinax schizophylla var. biflabellata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Trithrinax schyzophylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Trithrinax schyzophylla var. schyzophylla': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vachellia albicorticata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vachellia aroma': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vachellia astringens': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vachellia caven': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vachellia macracantha': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vallesia glabra': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vasconcellea quercifolia': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Vassobia breviflora': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Ximenia americana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Xylosma longipetiolata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Xylosma pubescens': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Xylosma tweediana': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Xylosma venosa': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Zanthoxylum coco': { ecuacion: 'V = exp(-3,27947-0,07343*(lnH)²+1,05804*ln(DAP²*H))/1000' },
+    'Zanthoxylum fagara': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Zanthoxylum petiolare': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+    'Zanthoxylum rhoifolium': { ecuacion: 'V = (-1,5336+0,0525*DAP²+0,0569*DAP²*LF+0,0161*DAP*LF²)/1000' },
+    'Zuccagnia punctata': { ecuacion: 'V = -0,09996+0,00057954*DAP²' },
+  },
+  'SPA': {
+    'Achatocarpus praecox': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Actinostemon concolor': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Aegiphila sp.': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Aiouea amoena': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Albizia niopoides': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Alchornea glandulosa': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Alchornea triplinervia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Allophylus edulis': { ecuacion: 'V = -0,02645+0,00051778*DAP²' },
+    'Aloysia virgata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Annona emarginata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Annona neosalicifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Annona rugulosa': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Apuleia leiocarpa': { ecuacion: 'V = -0,36367+0,00102635*DAP²' },
+    'Aralia warmingiana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Araucaria angustifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Aspidosperma australe': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Aspidosperma polyneuron': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ateleia glazioveana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Balfourodendron riedelianum': { ecuacion: 'V = -0,48110+0,00109879*DAP²' },
+    'Banara tomentosa': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Bastardiopsis densiflora': { ecuacion: 'V = -0,51787+0,00101204*DAP²' },
+    'Bauhinia forficata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Bauhinia microstachya': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cabralea canjerana': { ecuacion: 'V = -0,16388+0,00070302*DAP²' },
+    'Calliandra foliolosa': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Campomanesia guazumifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Campomanesia xanthocarpa': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Carica quercifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Casearia decandra': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Casearia sylvestris': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cecropia pachystachya': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cedrela fissilis': { ecuacion: 'V = -0,32029+0,00090151*DAP²' },
+    'Ceiba chodatii': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ceiba speciosa': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Celtis iguanaea': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cestrum laevigatum': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Chrysophyllum gonocarpum': { ecuacion: 'V = -0,00698+0,00055555*DAP²' },
+    'Chrysophyllum marginatum': { ecuacion: 'V = -0,03529+0,00090151*DAP²' },
+    'Citharexylum montevidense': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Citronella paniculata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Citrus sp.*': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cordia americana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cordia ecalyculata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cordia trichotoma': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Coutarea hexandra': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Cupania vernalis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Dendropanax cuneatus': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Diatenopteryx sorbifolia': { ecuacion: 'V = -0,30924+0,00088966*DAP²' },
+    'Didymopanax morototoni': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Enterolobium contortisiliquum': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Erythrina falcata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Erythroxylum deciduum': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Eucalyptus grandis*': { ecuacion: 'V = -0,03435+0,00067705*DAP²' },
+    'Eugenia burkartiana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Eugenia involucrata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Eugenia psidiiflora': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Eugenia pyriformis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Eugenia uniflora': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Euterpe edulis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Fagara chiloperone': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ficus luschnathiana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Gleditsia amorphoides': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Guarea kunthiana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Guarea macrophylla': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Guazuma ulmifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Handroanthus albus': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Handroanthus heptaphyllus': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Helietta apiculata': { ecuacion: 'V = -0,09949+0,00073571*DAP²' },
+    'Heliocarpus popayanensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Hennecartia omphalandra': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Hexachlamys edulis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Holocalyx balansae': { ecuacion: 'V = -0,16710+0,00067104*DAP²' },
+    'Hovenia dulcis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ilex brevicuspis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ilex paraguariensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Inga marginata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Inga uraguensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Inga verna': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Jacaranda micrantha': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Jacaratia spinosa': { ecuacion: 'V = -0,11007+0,00045694*DAP²' },
+    'Lithraea molleoides': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Lonchocarpus muehlbergianus': { ecuacion: 'V = -0,10374+0,00058601*DAP²' },
+    'Lonchocarpus nitidus': { ecuacion: 'V = -0,23155+0,00086506*DAP²' },
+    'Luehea divaricata': { ecuacion: 'V = -0,63780+0,00097390*DAP²' },
+    'Machaerium paraguariense': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Machaerium stipitatum': { ecuacion: 'V = -0,36061+0,00100716*DAP²' },
+    'Maclura tinctoria': { ecuacion: 'V = exp(-3,27947-0,07343*(lnLF)²+1,05804*ln(DAP²*LF))/1000' },
+    'Matayba elaeagnoides': { ecuacion: 'V = -0,18834+0,00070929*DAP²' },
+    'Melia azedarach': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Monteverdia ilicifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Morus alba*': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Muellera campestris': { ecuacion: 'V = (-1,5336+0,0525*DAP²+0,0569*DAP²*LF+0,0161*DAP*LF²)/1000' },
+    'Myrcianthes pungens': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Myrocarpus frondosus': { ecuacion: 'V = -0,25142+0,00091403*DAP²' },
+    'Myrsine balansae': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Myrsine coriacea': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Myrsine parvula': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Nectandra angustifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Nectandra lanceolata': { ecuacion: 'V = -0,15200+0,00078945*DAP²' },
+    'Nectandra membranacea': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ocotea lancifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ocotea puberula': { ecuacion: 'V = -0,57078+0,00098919*DAP²' },
+    'Parapiptadenia rigida': { ecuacion: 'V = 0,0313+0,00077810*DAP²' },
+    'Peltophorum dubium': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Phytolacca dioica': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Picrasma crenata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Pilocarpus pennatifolius': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Pinus elliotti*': { ecuacion: 'V = (0,04076*DAP^2,01848*H^0,98123)/1000' },
+    'Pinus sp.*': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Pinus taeda*': { ecuacion: 'V = (0,04076*DAP^2,01848*H^0,98123)/1000' },
+    'Pisonia zapallo': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Plinia rivularis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Pouteria salicifolia': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Prunus brasiliensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Prunus subcoriacea': { ecuacion: 'V = -0,12170+0,00073043*DAP²' },
+    'Quillaja brasiliensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Rauvolfia sellowii': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Ruprechtia laxiflora': { ecuacion: 'V = -0,10352+0,00070109*DAP²' },
+    'Sambucus australis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sapium glandulosum': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sapium haematospermum': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Schinus terebinthifolius': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sebastiania argutidens': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sebastiania brasiliensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sebastiania commersoniana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Seguieria aculeata': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Senegalia polyphylla': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sideroxylon obtusifolium': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Solanum granulosumleprosum': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Solanum pseudoquina': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Solanum sanctaecatharinae': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Sorocea bonplandii': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Strychnos brasiliensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Styrax leprosus': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Syagrus romanzoffiana': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Symplocos uniflora': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Tabernaemontana catharinensis': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Terminalia triflora': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Tetrorchidium rubrivenium': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Trema micrantha': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Trichilia catigua': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Trichilia claussenii': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Trichilia elegans': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Urera baccifera': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Vitex megapotamica': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Xylosma pseudosalzmanii': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Zanthoxylum fagara': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Zanthoxylum petiolare': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+    'Zanthoxylum rhoifolium': { ecuacion: 'V = -0,27870+0,00084276*DAP²' },
+  },
+};
+
 window.speciesFormulasByRegion = {
   'ESP': {
     'Acanthosyris spinescens': { scientificName: 'Saucillo espinoso', volFuste: (d, af, at) => 0.07307+0.00005407*d**2*af, pesoEspecifico: 0.75 },
@@ -2823,6 +3335,14 @@ window.speciesFormulasByRegion = {
 
         function generatePoaSections() {
             const numPoas = parseInt(inputNumPoas.value, 10) || 0;
+            // Destruir instancias Leaflet existentes antes de borrar el DOM
+            Object.keys(poaMapsInstances).forEach(id => {
+                try {
+                    if (poaMapsInstances[id].resizeObserver) poaMapsInstances[id].resizeObserver.disconnect();
+                    poaMapsInstances[id].map.remove();
+                } catch(e) {}
+                delete poaMapsInstances[id];
+            });
             poaContainer.innerHTML = ''; 
             if (numPoas === 0) return;
 
@@ -3122,14 +3642,33 @@ window.speciesFormulasByRegion = {
                     showPoaStatus('Capas eliminadas.', 'info');
                 });
 
-                // Invalidar tamaño cuando el <details> se abre
+                // Invalidar tamaño cuando el <details> se abre (el mapa puede inicializar oculto)
                 const detailsEl = mapDiv.closest('details');
                 if (detailsEl) {
                     detailsEl.addEventListener('toggle', () => {
-                        if (detailsEl.open) setTimeout(() => poaMap.invalidateSize(), 100);
+                        if (detailsEl.open) {
+                            [50, 150, 300, 600, 1200].forEach(delay =>
+                                setTimeout(() => poaMap.invalidateSize(), delay)
+                            );
+                        }
                     });
                 }
-                setTimeout(() => poaMap.invalidateSize(), 200);
+                // Invalidar tamaño inicial por si ya estaba abierto
+                [100, 300, 600, 1200].forEach(delay =>
+                    setTimeout(() => poaMap.invalidateSize(), delay)
+                );
+                // ResizeObserver: detectar cuando el contenedor toma dimensiones reales
+                if (typeof ResizeObserver !== 'undefined') {
+                    const ro = new ResizeObserver(entries => {
+                        for (const entry of entries) {
+                            if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+                                poaMap.invalidateSize();
+                            }
+                        }
+                    });
+                    ro.observe(mapDiv);
+                    poaMapsInstances[poaId].resizeObserver = ro;
+                }
             });
         }
 
@@ -3430,7 +3969,10 @@ window.speciesFormulasByRegion = {
                         return;
                     }
 
-                    const validSpecies = new Set(Object.keys(speciesFormulas));
+                    const _impRegion = document.getElementById('selEcoregion') ? document.getElementById('selEcoregion').value : '';
+                    const _impSrc = (_impRegion && window.speciesFormulasByRegion && window.speciesFormulasByRegion[_impRegion])
+                        ? window.speciesFormulasByRegion[_impRegion] : speciesFormulas;
+                    const validSpecies = new Set(Object.keys(_impSrc));
                     const newTrees = [];
                     const errors = [];
 
@@ -3444,7 +3986,21 @@ window.speciesFormulasByRegion = {
                         const altFuste = parseFloat(String(row[colAltFuste]).replace(',', '.'));
                         const parcelaNum = parseInt(String(row[colParcela]));
 
-                        if (!validSpecies.has(especie)) { errors.push(`Fila ${r+1}: Especie "${especie}" no reconocida.`); continue; }
+                        if (!validSpecies.has(especie)) {
+                            // Intentar extraer nombre científico entre paréntesis: "Nombre vulgar (Nombre científico)"
+                            const matchParen = especie.match(/\(([^)]+)\)\s*$/);
+                            const alternativo = matchParen ? matchParen[1].trim() : null;
+                            if (alternativo && validSpecies.has(alternativo)) {
+                                if (isNaN(dap) || dap <= 0) { errors.push(`Fila ${r+1}: DAP inválido.`); continue; }
+                                if (isNaN(altTotal) || altTotal <= 0) { errors.push(`Fila ${r+1}: Alt. Total inválida.`); continue; }
+                                if (isNaN(altFuste) || altFuste < 0) { errors.push(`Fila ${r+1}: Alt. Fuste inválida.`); continue; }
+                                if (isNaN(parcelaNum) || parcelaNum <= 0) { errors.push(`Fila ${r+1}: Parcela N° inválida.`); continue; }
+                                if (altFuste > altTotal) { errors.push(`Fila ${r+1}: Alt. Fuste > Alt. Total.`); continue; }
+                                newTrees.push({ id: Date.now() + r, especie: alternativo, dap, altTotal, altFuste, parcelaNum });
+                                continue;
+                            }
+                            errors.push(`Fila ${r+1}: Especie "${especie}" no reconocida.`); continue;
+                        }
                         if (isNaN(dap) || dap <= 0) { errors.push(`Fila ${r+1}: DAP inválido.`); continue; }
                         if (isNaN(altTotal) || altTotal <= 0) { errors.push(`Fila ${r+1}: Alt. Total inválida.`); continue; }
                         if (isNaN(altFuste) || altFuste < 0) { errors.push(`Fila ${r+1}: Alt. Fuste inválida.`); continue; }
@@ -3642,18 +4198,23 @@ window.speciesFormulasByRegion = {
                 XLSX.utils.book_append_sheet(wb, wsSp, 'ESPECIES_VALIDAS');
 
                 // ── Hoja FORMULAS_VOLUMEN ───────────────────────────────────
-                var fvData = [['ESPECIE (Nombre Científico)', 'NOMBRE VULGAR', 'ECUACIÓN VOLUMEN DE FUSTE', 'ECUACIÓN VOLUMEN TOTAL', 'Referencias: d=DAP(cm), hf=Alt.Fuste(m), ht=Alt.Total(m), V=Volumen(m³)']];
+                var fvData = [['ESPECIE (Nombre Científico)', 'NOMBRE VULGAR', 'ECUACIÓN VOLUMEN DE FUSTE', 'Ecorregión', 'Fuente: Segundo Inventario Nacional de Bosques Nativos (PINBN) | DAP=diám. altura pecho (cm), LF=long. fuste (m), H=alt. total (m), V=vol. (m³)']];
+                var textoRegionFV = region && window.ecuacionesTexto && window.ecuacionesTexto[region]
+                    ? window.ecuacionesTexto[region] : null;
                 Object.keys(fuenteEspecies).sort().forEach(function(key) {
                     var sp = fuenteEspecies[key];
+                    var ecuacionTexto = (textoRegionFV && textoRegionFV[key])
+                        ? textoRegionFV[key].ecuacion
+                        : (sp.volFuste ? _describirFusteXLS(sp.volFuste) : '-');
                     fvData.push([
                         key,
                         sp.scientificName || '',
-                        sp.volFuste ? _describirFusteXLS(sp.volFuste) : '-',
-                        sp.volTotal  ? _describirTotalXLS(sp.volTotal)  : '-'
+                        ecuacionTexto,
+                        etiquetaRegion
                     ]);
                 });
                 var wsFv = XLSX.utils.aoa_to_sheet(fvData);
-                wsFv['!cols'] = [{ wch: 45 }, { wch: 32 }, { wch: 62 }, { wch: 45 }, { wch: 65 }];
+                wsFv['!cols'] = [{ wch: 45 }, { wch: 32 }, { wch: 65 }, { wch: 28 }, { wch: 72 }];
                 XLSX.utils.book_append_sheet(wb, wsFv, 'FORMULAS_VOLUMEN');
 
                 XLSX.writeFile(wb, nombreArchivo);
@@ -3683,6 +4244,10 @@ window.speciesFormulasByRegion = {
     </script>
 </body>
 </html>
+
+      
+                                
+
 
       
                                 
