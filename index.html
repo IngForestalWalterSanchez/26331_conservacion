@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,7 +97,7 @@
             font-size: 1.1em;
             cursor: pointer;
             margin-top: 10px;
-            transition: background-color: 0.2s;
+            transition: background-color 0.2s;
         }
         
         #loginButton:hover {
@@ -673,7 +674,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.9em;
-            transition: background-color: 0.2s;
+            transition: background-color 0.2s;
         }
         .map-btn:hover { background-color: #0056b3; }
         .map-btn.clear { background-color: #dc3545; }
@@ -786,6 +787,8 @@
             color: #555;
         }
 
+
+
         .firmas-section-print {
             display: none;
         }
@@ -802,6 +805,7 @@
         .poa-map-controls .btn-map-poa:hover { background: #5a6268; }
         .poa-map-leaflet { height: 320px; width: 100%; }
         .poa-map-status { font-size: 0.88em; padding: 6px 14px; display: none; }
+        .poa-map-print-img { display: none; }
         /* --- FIN ESTILOS MAPA POA --- */
 
         @media print {
@@ -892,6 +896,23 @@
              {
                 display: none !important;
             }
+            /* EXCEPCION: mostrar el fieldset que contiene el mapa POA */
+            /* El fieldset padre tiene display:none, pero el mapa debe verse.
+               La solucion es override en el fieldset mismo usando :has() si el navegador lo soporta,
+               o directamente sobrescribir para todos los input-fieldset dentro de poa-content */
+            #poaContainer .input-fieldset {
+                display: block !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #poaContainer .input-fieldset > legend,
+            #poaContainer .input-fieldset > .form-grid {
+                display: none !important;
+            }
+            #poaContainer .poa-map-section {
+                display: block !important;
+            }
             
             #graficosContainer,
             #graficosInventarioContainer,
@@ -905,6 +926,12 @@
             }
             
             /* --- INICIO: REGLAS DE IMPRESIÓN PARA POAs --- */
+            /* Mapa POA: mostrar Leaflet directamente como el mapa principal */
+            .poa-map-section { display: block !important; page-break-inside: avoid; border: 1px solid #aaa !important; margin: 4mm 0 !important; }
+            .poa-map-leaflet { display: block !important; height: 85mm !important; width: 100% !important; }
+            .poa-map-print-img { display: none !important; }
+            .poa-map-controls { display: none !important; }
+            .poa-map-status { display: none !important; }
             .poa-details-wrapper {
                 page-break-before: always;
             }
@@ -937,6 +964,7 @@
                 color: #000 !important;
             }
              /* --- FIN: REGLAS DE IMPRESIÓN PARA POAs --- */
+
 
             .input-fieldset textarea,
             #poaContainer .auto-resize-textarea { 
@@ -1344,7 +1372,60 @@
                             <label for="inputPartidaInmobiliaria">Partida Inmobiliaria:</label>
                             <input type="text" id="inputPartidaInmobiliaria">
                             <label for="selectLocalidad">Localidad:</label>
-                            <select id="selectLocalidad"></select>
+                            <select id="selectLocalidad" onchange="(function(sel){var map={'ALVEAR':'GENERAL ALVEAR','BELLA VISTA':'BELLA VISTA','BERON DE ASTRADA':'BERON DE ASTRADA','CHAVARRIA':'SAN ROQUE','COLONIA CARLOS PELLEGRINI':'SAN MARTIN','COLONIA LIEBIGS':'ITUZAINGO','CONCEPCION':'CONCEPCION','CORRIENTES':'CAPITAL','CURUZU CUATIA':'CURUZU CUATIA','EL SOMBRERO':'EMPEDRADO','EMPEDRADO':'EMPEDRADO','ESQUINA':'ESQUINA','FELIPE YOFRE':'MERCEDES','GARRUCHOS':'SANTO TOME','GOBERNADOR AGR. VALENTIN VIRASORO':'SANTO TOME','GOBERNADOR JUAN E. MARTINEZ':'LAVALLE','GOYA':'GOYA','GUAVIRAVI':'SAN MARTIN','ITA IBATE':'GENERAL PAZ','ITATI':'ITATI','ITUZAINGO':'ITUZAINGO','LA CRUZ':'SAN MARTIN','LAGUNA BRAVA':'CAPITAL','LAVALLE':'LAVALLE','LORETO':'SAN MIGUEL','MARIANO I. LOZA':'MERCEDES','MBURUCUYA':'MBURUCUYA','MERCEDES':'MERCEDES','MOCORETA':'MONTE CASEROS','MONTE CASEROS':'MONTE CASEROS','NUESTRA SENORA DEL ROSARIO DE CAA CATI':'GENERAL PAZ','9 DE JULIO':'SAN ROQUE','PASO DE LA PATRIA':'SAN COSME','PASO DE LOS LIBRES':'PASO DE LOS LIBRES','PEDRO R. FERNANDEZ':'SAN ROQUE','PERUGORRIA':'CURUZU CUATIA','SALADAS':'SALADAS','SAN ANTONIO':'ITUZAINGO','SAN CARLOS':'ITUZAINGO','SAN COSME':'SAN COSME','SAN LORENZO':'SALADAS','SAN LUIS DEL PALMAR':'SAN LUIS DEL PALMAR','SAN MIGUEL':'SAN MIGUEL','SAN ROQUE':'SAN ROQUE','SANTA ANA':'SAN COSME','SANTA LUCIA':'LAVALLE','SANTA ROSA':'CONCEPCION','SANTO TOME':'SANTO TOME','SAUCE':'SAUCE','VILLA OLIVARI':'ITUZAINGO','YAPEYU':'SAN MARTIN'};var d=document.getElementById('inputDepartamento');if(d)d.value=map[sel.value]||'';})(this)">
+                                <option value="">-- Seleccione una localidad --</option>
+                                <option value="9 DE JULIO">9 DE JULIO</option>
+                                <option value="ALVEAR">ALVEAR</option>
+                                <option value="BELLA VISTA">BELLA VISTA</option>
+                                <option value="BERON DE ASTRADA">BERON DE ASTRADA</option>
+                                <option value="CHAVARRIA">CHAVARRIA</option>
+                                <option value="COLONIA CARLOS PELLEGRINI">COLONIA CARLOS PELLEGRINI</option>
+                                <option value="COLONIA LIEBIGS">COLONIA LIEBIGS</option>
+                                <option value="CONCEPCION">CONCEPCION</option>
+                                <option value="CORRIENTES">CORRIENTES</option>
+                                <option value="CURUZU CUATIA">CURUZU CUATIA</option>
+                                <option value="EL SOMBRERO">EL SOMBRERO</option>
+                                <option value="EMPEDRADO">EMPEDRADO</option>
+                                <option value="ESQUINA">ESQUINA</option>
+                                <option value="FELIPE YOFRE">FELIPE YOFRE</option>
+                                <option value="GARRUCHOS">GARRUCHOS</option>
+                                <option value="GOBERNADOR AGR. VALENTIN VIRASORO">GOBERNADOR AGR. VALENTIN VIRASORO</option>
+                                <option value="GOBERNADOR JUAN E. MARTINEZ">GOBERNADOR JUAN E. MARTINEZ</option>
+                                <option value="GOYA">GOYA</option>
+                                <option value="GUAVIRAVI">GUAVIRAVI</option>
+                                <option value="ITA IBATE">ITA IBATE</option>
+                                <option value="ITATI">ITATI</option>
+                                <option value="ITUZAINGO">ITUZAINGO</option>
+                                <option value="LA CRUZ">LA CRUZ</option>
+                                <option value="LAGUNA BRAVA">LAGUNA BRAVA</option>
+                                <option value="LAVALLE">LAVALLE</option>
+                                <option value="LORETO">LORETO</option>
+                                <option value="MARIANO I. LOZA">MARIANO I. LOZA</option>
+                                <option value="MBURUCUYA">MBURUCUYA</option>
+                                <option value="MERCEDES">MERCEDES</option>
+                                <option value="MOCORETA">MOCORETA</option>
+                                <option value="MONTE CASEROS">MONTE CASEROS</option>
+                                <option value="NUESTRA SENORA DEL ROSARIO DE CAA CATI">NUESTRA SENORA DEL ROSARIO DE CAA CATI</option>
+                                <option value="PASO DE LA PATRIA">PASO DE LA PATRIA</option>
+                                <option value="PASO DE LOS LIBRES">PASO DE LOS LIBRES</option>
+                                <option value="PEDRO R. FERNANDEZ">PEDRO R. FERNANDEZ</option>
+                                <option value="PERUGORRIA">PERUGORRIA</option>
+                                <option value="SALADAS">SALADAS</option>
+                                <option value="SAN ANTONIO">SAN ANTONIO</option>
+                                <option value="SAN CARLOS">SAN CARLOS</option>
+                                <option value="SAN COSME">SAN COSME</option>
+                                <option value="SAN LORENZO">SAN LORENZO</option>
+                                <option value="SAN LUIS DEL PALMAR">SAN LUIS DEL PALMAR</option>
+                                <option value="SAN MIGUEL">SAN MIGUEL</option>
+                                <option value="SAN ROQUE">SAN ROQUE</option>
+                                <option value="SANTA ANA">SANTA ANA</option>
+                                <option value="SANTA LUCIA">SANTA LUCIA</option>
+                                <option value="SANTA ROSA">SANTA ROSA</option>
+                                <option value="SANTO TOME">SANTO TOME</option>
+                                <option value="SAUCE">SAUCE</option>
+                                <option value="VILLA OLIVARI">VILLA OLIVARI</option>
+                                <option value="YAPEYU">YAPEYU</option>
+                            </select>
                             <label for="inputDepartamento">Departamento:</label>
                             <input type="text" id="inputDepartamento" readonly>
                             <label for="inputProvincia">Provincia:</label>
@@ -1419,6 +1500,8 @@
                                                 </label>
                                             </div>
                                         </div>
+
+
                                     </div>
                                     
                                     <div class="map-button-row">
@@ -1914,6 +1997,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
     
                 <div class="controls" style="border-bottom: none; border-top: 1px solid #dee2e6;">
                     <button id="btnImprimirPDF">Imprimir / Guardar PDF</button>
+
                 </div>
             </div>
         </div>
@@ -2072,21 +2156,24 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
             }
 
+            function processOrdenamientoData(data) {
+                if (mapLayers.ordenamiento) map.removeLayer(mapLayers.ordenamiento);
+                ordenamientoGeoJSON = data;
+                mapLayers.ordenamiento = L.geoJSON(data, {
+                    style: mapStyles.ordenamiento,
+                    onEachFeature: (feature, layer) => { layer.bindPopup(`<strong>Categoría:</strong> ${feature.properties.Categoria || 'N/A'}`); }
+                }).addTo(map);
+                var overlayLayers = { ...getVisibleUserLayers(), "Ordenamiento Territorial": mapLayers.ordenamiento };
+                updateLayerControl(overlayLayers);
+                showMapStatus('Capa de Ordenamiento cargada desde el servidor.', 'success');
+                calcularInterseccionesYSuperficies();
+                calculatePlanCategoriesIntersection();
+            }
+
             function loadOrdenamientoFromServer() {
                 fetch('Ordenamiento.geojson')
                     .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
-                    .then(data => {
-                        ordenamientoGeoJSON = data;
-                        mapLayers.ordenamiento = L.geoJSON(data, {
-                           style: mapStyles.ordenamiento,
-                           onEachFeature: (feature, layer) => { layer.bindPopup(`<strong>Categoría:</strong> ${feature.properties.Categoria || 'N/A'}`); }
-                        }).addTo(map);
-                        var overlayLayers = { ...getVisibleUserLayers(), "Ordenamiento Territorial": mapLayers.ordenamiento };
-                        updateLayerControl(overlayLayers);
-                        showMapStatus('Capa de Ordenamiento cargada desde el servidor.', 'success');
-                        calcularInterseccionesYSuperficies();
-                        calculatePlanCategoriesIntersection(); 
-                    })
+                    .then(data => { processOrdenamientoData(data); })
                     .catch(error => { console.error('Error al cargar Ordenamiento.json:', error); showMapStatus('Error al cargar la capa de Ordenamiento desde el servidor.', 'error'); });
             }
             
@@ -2173,70 +2260,112 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 } catch(e) { showMapStatus('Error calculando el área del Plan Técnico: ' + e.message, 'error'); }
             }
             
+            // ── Detección de categoría OTBN: itera TODAS las propiedades ──────────────
+            function detectarCatOTBN(feature) {
+                if (!feature || !feature.properties) return null;
+                for (const key of Object.keys(feature.properties)) {
+                    const val = String(feature.properties[key] || '').toUpperCase().trim();
+                    if (val.includes('ROJO'))     return 'ROJO';
+                    if (val.includes('AMARILLO')) return 'AMARILLO';
+                    if (val.includes('VERDE'))    return 'VERDE';
+                    // Valores numéricos o romanos puros
+                    if (val === 'I'   || val === '1') return 'ROJO';
+                    if (val === 'II'  || val === '2') return 'AMARILLO';
+                    if (val === 'III' || val === '3') return 'VERDE';
+                    // "CAT I", "CAT. I", "CATEGORIA I" etc
+                    if (/^CAT(EGORIA|EGOR[ÍI]A)?[.:\s]*I$/i.test(val))   return 'ROJO';
+                    if (/^CAT(EGORIA|EGOR[ÍI]A)?[.:\s]*II$/i.test(val))  return 'AMARILLO';
+                    if (/^CAT(EGORIA|EGOR[ÍI]A)?[.:\s]*III$/i.test(val)) return 'VERDE';
+                }
+                return null;
+            }
+
+            // Aplana Polygon y MultiPolygon a array de Polygon Features
+            function aplanarAPolygons(feature) {
+                if (!feature || !feature.geometry) return [];
+                if (feature.geometry.type === 'Polygon') return [feature];
+                if (feature.geometry.type === 'MultiPolygon') {
+                    return feature.geometry.coordinates.map(coords => ({
+                        type: 'Feature', properties: feature.properties,
+                        geometry: { type: 'Polygon', coordinates: coords }
+                    }));
+                }
+                return [];
+            }
+
+            // Intersección con filtro bbox (rápido) + limpieza de coords como fallback
+            function intersectarSeguro(featA, featB) {
+                try {
+                    const bA = turf.bbox(featA), bB = turf.bbox(featB);
+                    if (bA[2] < bB[0] || bB[2] < bA[0] || bA[3] < bB[1] || bB[3] < bA[1]) return null;
+                    return turf.intersect(featA, featB);
+                } catch(e) {
+                    try { return turf.intersect(turf.cleanCoords(featA), turf.cleanCoords(featB)); }
+                    catch(e2) { return null; }
+                }
+            }
+
+            // Núcleo del cálculo: dado un GeoJSON fuente, cruza con OTBN y suma por categoría
+            function _sumarCategoriasOTBN(sourceGeoJSON) {
+                let rojo = 0, amarillo = 0, verde = 0, sinCat = 0;
+                const srcFlat = [];
+                sourceGeoJSON.features.forEach(f => aplanarAPolygons(f).forEach(p => srcFlat.push(p)));
+                const ordFlat = [];
+                ordenamientoGeoJSON.features.forEach(f => aplanarAPolygons(f).forEach(p => ordFlat.push(p)));
+
+                // Log diagnóstico
+                if (ordFlat.length > 0) {
+                    const p0 = ordFlat[0].properties;
+                    console.log('[OTBN] Features:', ordFlat.length, '| Props[0]:', JSON.stringify(p0));
+                    console.log('[OTBN] Cat detectada[0]:', detectarCatOTBN(ordFlat[0]));
+                }
+
+                srcFlat.forEach(src => {
+                    ordFlat.forEach(ord => {
+                        const inter = intersectarSeguro(src, ord);
+                        if (!inter) return;
+                        const m2 = turf.area(inter);
+                        if (m2 < 1) return;
+                        const cat = detectarCatOTBN(ord);
+                        if      (cat === 'ROJO')     rojo     += m2;
+                        else if (cat === 'AMARILLO') amarillo += m2;
+                        else if (cat === 'VERDE')    verde    += m2;
+                        else                          sinCat   += m2;
+                    });
+                });
+                return { rojo, amarillo, verde, sinCat };
+            }
+
             function calcularInterseccionesYSuperficies() {
                 if (!predioGeoJSON || !ordenamientoGeoJSON) { return; }
-                showMapStatus('Calculando superficies...', 'success');
+                showMapStatus('Calculando superficies OTBN...', 'success');
                 try {
-                    const areaTotalM2 = turf.area(predioGeoJSON);
-                    const areaTotalHa = areaTotalM2 / 10000;
-                    document.getElementById('inputSupPredio').value = areaTotalHa.toFixed(2);
-                } catch (e) { showMapStatus('Error al calcular el área del predio.', 'error'); return; }
-                let areaRojoM2 = 0, areaAmarilloM2 = 0, areaVerdeM2 = 0;
+                    document.getElementById('inputSupPredio').value = (turf.area(predioGeoJSON) / 10000).toFixed(2);
+                } catch(e) { showMapStatus('Error al calcular área del predio.', 'error'); return; }
                 try {
-                    const predioFeatures = predioGeoJSON.features;
-                    const ordenamientoFeatures = ordenamientoGeoJSON.features;
-                    predioFeatures.forEach(predioFeature => {
-                        ordenamientoFeatures.forEach(ordenamientoFeature => {
-                            try {
-                                const intersection = turf.intersect(predioFeature.geometry, ordenamientoFeature.geometry);
-                                if (intersection) {
-                                    const areaInterseccionM2 = turf.area(intersection);
-                                    const Categoria = (ordenamientoFeature.properties.Categoria || '').toUpperCase();
-                                    if (Categoria.includes('ROJO')) { areaRojoM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
-                                }
-                            } catch (e) { /* Ignorar errores */ }
-                        });
-                    });
-                    document.getElementById('inputCatRojo').value = (areaRojoM2 / 10000).toFixed(2);
-                    document.getElementById('inputCatAmarillo').value = (areaAmarilloM2 / 10000).toFixed(2);
-                    document.getElementById('inputCatVerde').value = (areaVerdeM2 / 10000).toFixed(2);
-                    actualizarSuperficientes(); 
-                    showMapStatus('Cálculo de superficies por categoría completado.', 'success');
-                } catch(e) { showMapStatus('Error durante el cálculo de intersección: ' + e.message, 'error'); }
+                    const { rojo, amarillo, verde } = _sumarCategoriasOTBN(predioGeoJSON);
+                    document.getElementById('inputCatRojo').value     = (rojo     / 10000).toFixed(2);
+                    document.getElementById('inputCatAmarillo').value = (amarillo / 10000).toFixed(2);
+                    document.getElementById('inputCatVerde').value    = (verde    / 10000).toFixed(2);
+                    actualizarSuperficientes();
+                    showMapStatus('✅ Rojo: ' + (rojo/10000).toFixed(2) + ' ha | Amarillo: ' + (amarillo/10000).toFixed(2) + ' ha | Verde: ' + (verde/10000).toFixed(2) + ' ha', 'success');
+                } catch(e) { showMapStatus('Error en cálculo OTBN: ' + e.message, 'error'); console.error(e); }
             }
-            
+
             function calculatePlanCategoriesIntersection() {
                 if (!planGeoJSON || !ordenamientoGeoJSON) {
-                    document.getElementById('spanPlanCatRojo').textContent = '0,00';
-                    document.getElementById('spanPlanCatAmarillo').textContent = '0,00';
-                    document.getElementById('spanPlanCatVerde').textContent = '0,00';
+                    ['spanPlanCatRojo','spanPlanCatAmarillo','spanPlanCatVerde'].forEach(id => {
+                        document.getElementById(id).textContent = '0,00';
+                    });
                     return;
                 }
-                let areaRojoM2 = 0, areaAmarilloM2 = 0, areaVerdeM2 = 0;
                 try {
-                    const planFeatures = planGeoJSON.features;
-                    const ordenamientoFeatures = ordenamientoGeoJSON.features;
-                    planFeatures.forEach(planFeature => {
-                        ordenamientoFeatures.forEach(ordenamientoFeature => {
-                            try {
-                                const intersection = turf.intersect(planFeature.geometry, ordenamientoFeature.geometry);
-                                if (intersection) {
-                                    const areaInterseccionM2 = turf.area(intersection);
-                                    const Categoria = (ordenamientoFeature.properties.Categoria || '').toUpperCase();
-                                    if (Categoria.includes('ROJO')) { areaRojoM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
-                                }
-                            } catch (e) { /* Ignorar errores */ }
-                        });
-                    });
-                    document.getElementById('spanPlanCatRojo').textContent = formatNumber(areaRojoM2 / 10000);
-                    document.getElementById('spanPlanCatAmarillo').textContent = formatNumber(areaAmarilloM2 / 10000);
-                    document.getElementById('spanPlanCatVerde').textContent = formatNumber(areaVerdeM2 / 10000);
+                    const { rojo, amarillo, verde } = _sumarCategoriasOTBN(planGeoJSON);
+                    document.getElementById('spanPlanCatRojo').textContent     = formatNumber(rojo     / 10000);
+                    document.getElementById('spanPlanCatAmarillo').textContent = formatNumber(amarillo / 10000);
+                    document.getElementById('spanPlanCatVerde').textContent    = formatNumber(verde    / 10000);
                     validatePlanSurfaces();
-                } catch(e) { showMapStatus('Error calculando intersección del Área del Plan: ' + e.message, 'error'); }
+                } catch(e) { showMapStatus('Error calculando intersección del Plan: ' + e.message, 'error'); console.error(e); }
             }
             
             function validatePlanSurfaces() {
@@ -2262,12 +2391,13 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 return true;
             }
 
-            document.getElementById('kml-predio-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'predio'));
+                        document.getElementById('kml-predio-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'predio'));
             document.getElementById('kml-plan-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'plan'));
             document.getElementById('kml-parcelas-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'parcelas'));
             document.getElementById('kml-predio-visible').addEventListener('change', (e) => toggleLayer('predio', e.target.checked));
             document.getElementById('kml-plan-visible').addEventListener('change', (e) => toggleLayer('plan', e.target.checked));
             document.getElementById('kml-parcelas-visible').addEventListener('change', (e) => toggleLayer('parcelas', e.target.checked));
+
             document.getElementById('btn-map-clear').addEventListener('click', () => {
                 ['predio', 'plan', 'parcelas'].forEach(key => { if (mapLayers[key]) { map.removeLayer(mapLayers[key]); mapLayers[key] = null; } });
                 predioGeoJSON = null; planGeoJSON = null; 
@@ -3427,6 +3557,7 @@ window.speciesFormulasByRegion = {
                                         </div>
                                         <div id="poa-map-status-${i}" class="poa-map-status"></div>
                                         <div id="poa-map-${i}" class="poa-map-leaflet"></div>
+                                        <img id="poa-map-print-img-${i}" class="poa-map-print-img" alt="Mapa de localización POA ${i}" style="display:none;width:100%;height:auto;" />
                                     </div>
                                 </fieldset>
                                 ${activitiesHtml}
@@ -3452,7 +3583,6 @@ window.speciesFormulasByRegion = {
                                 <div class="result-table-container">
                                     ${budgetTableHTML}
                                 </div>
-                                ${generateSignatureBlockHTML('poa' + i)}
                             </div>
                         </details>
                     </div>
@@ -3561,7 +3691,8 @@ window.speciesFormulasByRegion = {
 
                 const poaMap = L.map(mapDiv.id, { zoomControl: true }).setView([-28.5, -57.5], 8);
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles © Esri'
+                    attribution: 'Tiles © Esri',
+                    crossOrigin: 'anonymous'
                 }).addTo(poaMap);
                 L.control.scale({ imperial: false, metric: true }).addTo(poaMap);
 
@@ -3592,7 +3723,10 @@ window.speciesFormulasByRegion = {
                     if (bounds.length > 0) {
                         let combined = bounds[0];
                         bounds.forEach(b => { combined = combined.extend(b); });
-                        inst.map.fitBounds(combined, { padding: [20, 20] });
+                        inst.map.fitBounds(combined, {
+    paddingTopLeft: [10, 10],
+    paddingBottomRight: [400, 10]
+});
                     }
                 }
 
@@ -3797,22 +3931,7 @@ window.speciesFormulasByRegion = {
 
             alert("Se abrirá el diálogo de impresión. Para guardar como PDF, seleccione 'Guardar como PDF' o 'Microsoft Print to PDF' en el destino de la impresora.");
             
-            // Populate data for signature blocks (POAs únicamente; DDJJ se puebla aparte)
-            const numPoas = parseInt(inputNumPoas.value, 10) || 0;
-            const suffixes = [...Array.from({length: numPoas}, (_, i) => `poa${i + 1}`)];
-
-            suffixes.forEach(suffix => {
-                const checkRepLegalNoAplica = document.getElementById('checkRepLegalNoAplica').checked;
-                const titularNameEl = document.getElementById(`firmaPrintTitularProyecto-${suffix}`);
-                const titularCuitEl = document.getElementById(`firmaPrintTitularProyectoCUIT-${suffix}`);
-                if(titularNameEl) titularNameEl.textContent = checkRepLegalNoAplica ? (document.getElementById('inputTitularProyectoNombre').value || "..............................") : (document.getElementById('inputRepLegalNombre').value || "..............................");
-                if(titularCuitEl) titularCuitEl.textContent = checkRepLegalNoAplica ? (document.getElementById('inputTitularProyectoCUIT').value || "..............................") : (document.getElementById('inputRepLegalDNI').value || "..............................");
-                document.getElementById(`firmaPrintTecnicoNombre-${suffix}`).textContent = document.getElementById('inputTecnicoNombre').value || "..............................";
-                document.getElementById(`firmaPrintTecnicoMatricula-${suffix}`).textContent = document.getElementById('inputTecnicoMatricula').value || "..............................";
-                document.getElementById(`firmaPrintEstablecimiento-${suffix}`).textContent = document.getElementById('inputEstablecimiento').value || "..............................";
-                document.getElementById(`firmaPrintPartidaInmobiliaria-${suffix}`).textContent = document.getElementById('inputPartidaInmobiliaria').value || "..............................";
-                document.getElementById(`firmaPrintDepartamento-${suffix}`).textContent = document.getElementById('inputDepartamento').value || "..............................";
-            });
+            
 
             // Poblar firmas Declaración Jurada
             (function() {
@@ -3858,7 +3977,14 @@ window.speciesFormulasByRegion = {
             });
             
             renderPlanillaCampo(enteredTrees);
-            window.print();
+
+            // Abrir todos los POA details y refrescar mapas Leaflet antes de imprimir
+            document.querySelectorAll('#poaContainer details').forEach(d => { d.open = true; });
+            Object.values(poaMapsInstances).forEach(inst => {
+                try { inst.map.invalidateSize(); } catch(e) {}
+            });
+            // Pausa para que los tiles terminen de cargar
+            setTimeout(() => { window.print(); }, 1200);
         }
         function clearCalculations() { 
             const tablesToClear = ['tableVolumen', 'tableAreaBasal', 'tableDensidad', 'tableToneladas', 'tableResumenParcelasAB', 'tableDetalleParcelasObservado', 'tableDetalleParcelasHa']; 
